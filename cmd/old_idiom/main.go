@@ -10,6 +10,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/blueai2022/grpc_starts/internal/config"
+	"github.com/blueai2022/grpc_starts/internal/stream"
 	"github.com/rs/zerolog/log"
 )
 
@@ -29,6 +31,8 @@ func run() error {
 	defer cancel()
 
 	// Config
+	// TODO: add config.New() with err rerurned
+	settings := config.Settings{}
 
 	// Resource Connections: e.g. NATS/Kafka, Cassandra and etc.
 	// natsConn, err := ...
@@ -61,7 +65,7 @@ func run() error {
 	// mux.HandleFunc("/readyz", healthHandlerFunc)
 	// mux.HandleFunc("/livez", versionHandlerFunc)
 
-	// Connect Handlers and Transcoders
+	// Connect Handlers and Transcoders, to serve url path /video
 	// mux.Handle(svc.ConnectHandler())
 
 	protocols := new(http.Protocols)
