@@ -52,9 +52,29 @@ func main() {
             Err(err).
             Msg("startup failed")
     }
+
+	go func() {
+		if err := srv.httpServer.ListenAndServe(); err != nil {
+			log.Error().
+				Err(err).
+				Msg("http server shutdown error")
+		}
+	}()
     
     <-ctx.Done()
     
+	shutdownCtx, shutdownCancel := context.WithTimeout(
+		context.Background(),
+		srv.settings.HTTP.ShutdownTimeout,
+	)
+	defer shutdownCancel()
+
+	if err := srv.httpServer.Shutdown(shutdownCtx); err != nil {
+		log.Error().
+			Err(err).
+			Msg("http server shutdown error")
+	}
+
     srv.cleanup()  // Same cleanup on graceful shutdown
 }
 ```
